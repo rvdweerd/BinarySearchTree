@@ -15,8 +15,12 @@ enum class PrintOption
 	PostOrder
 };
 
-void insert(TreeNode*& Node, int val);
-void print(TreeNode* node, PrintOption opt = PrintOption::PreOrder);
+void insert(struct TreeNode*& Node, int val);
+void printPre(struct TreeNode* node);
+void printIn(struct TreeNode* node);
+void printPost(struct TreeNode* node);
+void printLevelTopDown(struct TreeNode* node);
+void printLevelBottomUp(struct TreeNode* node);
 
 
 

@@ -1,5 +1,7 @@
 #include "BinSearchTree.h"
-enum class PrintOption;
+#include <queue>
+#include <stack>
+
 void insert(TreeNode*& Node, int val)
 {
 	if (Node == nullptr)
@@ -20,14 +22,69 @@ void insert(TreeNode*& Node, int val)
 	return;
 }
 
-void print(TreeNode* node, PrintOption opt)
+void printPre(TreeNode* node)
 {
 	if (node != nullptr)
 	{
-		if (opt == PrintOption::PreOrder) std::cout << node->value << std::endl;
-		print(node->leftNode, opt);
-		if (opt == PrintOption::InOrder) std::cout << node->value << std::endl;
-		print(node->rightNode, opt);
-		if (opt == PrintOption::PostOrder) std::cout << node->value << std::endl;
+		std::cout << node->value << ", ";
+		printPre(node->leftNode);
+		printPre(node->rightNode);
+	}
+	return;
+}
+
+void printIn(TreeNode* node)
+{
+	if (node != nullptr)
+	{
+		printIn(node->leftNode);
+		std::cout << node->value << ", ";
+		printIn(node->rightNode);
+	}
+	return;
+}
+
+void printPost(TreeNode* node)
+{
+	if (node != nullptr)
+	{
+		printPost(node->leftNode);
+		printPost(node->rightNode);
+		std::cout << node->value << ", ";
+	}
+	return;
+}
+
+void printLevelTopDown(TreeNode* node)
+{
+	std::queue<TreeNode*> queue;
+	if (node != nullptr) queue.emplace(node);
+	while (!queue.empty())
+	{
+		TreeNode* current = queue.front();
+		queue.pop();
+		std::cout << current->value<<", ";
+		if (current->leftNode != nullptr) queue.emplace(current->leftNode);
+		if (current->rightNode != nullptr) queue.emplace(current->rightNode);
+	}
+}
+
+void printLevelBottomUp(struct TreeNode* node)
+{
+	std::queue<TreeNode*> queue;
+	std::stack<TreeNode*> stack;
+	if (node != nullptr) queue.emplace(node);
+	while (!queue.empty())
+	{
+		TreeNode* current = queue.front();
+		stack.emplace(current);
+		queue.pop();
+		if (current->rightNode != nullptr) queue.emplace(current->rightNode);
+		if (current->leftNode != nullptr) queue.emplace(current->leftNode);
+	}
+	while (!stack.empty())
+	{
+		std::cout << stack.top()->value << ", ";
+		stack.pop();
 	}
 }
