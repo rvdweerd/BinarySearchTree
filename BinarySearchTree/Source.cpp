@@ -1,12 +1,18 @@
 #include "BinSearchTree.h"
-
+#include <vector>
 
 int main()
 {
+	std::vector<int> list = { 17,4,1,6,32,24,81 };
+
 	TreeNode* tree = nullptr;
-	insert(tree, 50);
-	insert(tree, 50);
-	insert(tree, 49);
-	insert(tree, 51);
+	for (int v : list)
+	{
+		insert(tree, v);
+	}
+	
+	print(tree);
+
+	std::cin.get();
 	return 0;
 }
