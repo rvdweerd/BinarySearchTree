@@ -3,7 +3,7 @@
 
 struct TreeNode
 {
-	int value;
+	int value=0;
 	TreeNode* leftNode = nullptr;
 	TreeNode* rightNode = nullptr;
 };

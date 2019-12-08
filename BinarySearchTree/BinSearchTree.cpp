@@ -1,6 +1,7 @@
 #include "BinSearchTree.h"
 #include <queue>
 #include <stack>
+#include <vector>
 
 void insert(TreeNode*& node, int val)
 {
@@ -109,7 +110,20 @@ void getNodeDepth(TreeNode* node, int val, int& count)
 
 int getTreeDepth(TreeNode* node)
 {
-	return 0;
+	std::queue<TreeNode*> queue;
+	std::vector<int> nodeDepthValues = {};
+	if (node != nullptr) queue.emplace(node);
+	while (!queue.empty())
+	{
+		TreeNode* current = queue.front();
+		queue.pop();
+		int count = 0;
+		getNodeDepth(node, current->value, count);
+		nodeDepthValues.push_back(count);
+		if (current->leftNode != nullptr) queue.emplace(current->leftNode);
+		if (current->rightNode != nullptr) queue.emplace(current->rightNode);
+	}
+	return *std::max_element(nodeDepthValues.begin(), nodeDepthValues.end());
 }
 
 void printPre(TreeNode* node)

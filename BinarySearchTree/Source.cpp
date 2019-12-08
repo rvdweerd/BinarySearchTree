@@ -30,7 +30,9 @@ int main()
 	count = 0; getNodeDepth(tree, 20, count); std::cout << "Numer 20 is at depth: " << count << std::endl;
 	count = 0; getNodeDepth(tree, 9, count); std::cout << "Numer 9 is at depth: " << count << std::endl;
 	count = 0; getNodeDepth(tree, 18, count); std::cout << "Numer 18 is at depth: " << count << std::endl;
-
+	std::cout << "The Tree Depth is: " << getTreeDepth(tree)<<std::endl;
+	std::cout << "Inserting 19, "; insert(tree, 19);
+	std::cout << "The Tree Depth is: " << getTreeDepth(tree) << std::endl;
 	std::cin.get();
 	return 0;
 }
