@@ -2,6 +2,20 @@
 #include <queue>
 #include <stack>
 #include <vector>
+#include <numeric>
+#include <cmath>
+
+template <class T>
+int numDigits(T number)
+{
+	int digits = 0;
+	if (number < 0) digits = 1; // remove this line if '-' counts as a digit
+	while (number) {
+		number /= 10;
+		digits++;
+	}
+	return digits;
+}
 
 void insert(TreeNode*& node, int val)
 {
@@ -108,16 +122,50 @@ void getNodeDepth(TreeNode* node, int val, int& count)
 	else return;
 }
 
-int getTreeDepth(TreeNode* node)
+int getTreeHeight(TreeNode* node)
 {
 	if (node != nullptr)
 	{
-		return 1 + std::max(getTreeDepth(node->leftNode), getTreeDepth(node->rightNode));
+		return 1 + std::max(getTreeHeight(node->leftNode), getTreeHeight(node->rightNode));
 	}
 	else
 	{
-		return -1;
+		return 0;
 	}
+}
+
+int getNumberOfNodes(TreeNode* node)
+{
+	if (node == nullptr)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1 + getNumberOfNodes(node->leftNode) + getNumberOfNodes(node->rightNode);
+	}
+}
+
+int getNumberOfElementsAtDepth(TreeNode* node, int depth)
+{
+	std::queue<TreeNode*> queue;
+	std::vector<int> nodeDepthValues = {};
+	if (node != nullptr) queue.emplace(node);
+	while (!queue.empty())
+	{
+		TreeNode* current = queue.front();
+		queue.pop();
+		int count = 0;
+		getNodeDepth(node, current->value, count);
+		nodeDepthValues.push_back(count);
+		if (current->leftNode != nullptr) queue.emplace(current->leftNode);
+		if (current->rightNode != nullptr) queue.emplace(current->rightNode);
+	}
+	return std::accumulate(nodeDepthValues.begin(), nodeDepthValues.end(), 0, [&depth](int cum, int val)
+		{
+			if (val == depth) cum++;
+			return cum++;
+		});
 }
 
 void printPre(TreeNode* node)
@@ -167,7 +215,7 @@ void printLevelTopDown(TreeNode* node)
 	}
 }
 
-void printLevelBottomUp(struct TreeNode* node)
+void printLevelBottomUp(TreeNode* node)
 {
 	std::queue<TreeNode*> queue;
 	std::stack<TreeNode*> stack;
@@ -184,5 +232,109 @@ void printLevelBottomUp(struct TreeNode* node)
 	{
 		std::cout << stack.top()->value << ", ";
 		stack.pop();
+	}
+}
+
+void printTreeChart(TreeNode* node)
+{
+	bool printable = true;
+	const int height = getTreeHeight(node);
+	int maxValueInTree = getMax(node);
+	int minValueInTree = getMin(node);
+	int maxDigits = std::max(numDigits(minValueInTree),numDigits(maxValueInTree));
+	bool minDigits = 1; // [1] = puts a '.' when node is empty, [0] = no '.' printed for empty nodes 
+	
+	int whitespacePrintFactor = 0; int maxPrintableHeight = std::min(0, height);
+	if      (maxDigits <=2 ) { whitespacePrintFactor = 2; maxPrintableHeight = std::min(7, height); }
+	else if (maxDigits == 3) { whitespacePrintFactor = 2; maxPrintableHeight = std::min(7, height); }
+	else if (maxDigits == 4) { whitespacePrintFactor = 3; maxPrintableHeight = std::min(6, height); }
+	else if (maxDigits == 5) { whitespacePrintFactor = 3; maxPrintableHeight = std::min(6, height); }
+	else if (maxDigits == 6) { whitespacePrintFactor = 4; maxPrintableHeight = std::min(6, height); }
+	else { printable = false; }
+	
+	if (!printable)
+	{
+		std::cout << "Tree is not printable in chart format.";
+	}
+	else
+	{
+		std::vector<int> lookuparray;
+		int treeCapacity = 0;
+		for (int d = 0; d < height; d++)
+		{
+			for (int i = 0; i < int(std::pow(2, d)); i++)
+			{
+				lookuparray.push_back(d);
+				treeCapacity++;
+			}
+		}
+		std::vector<std::vector<int>> treegrid;
+		treegrid.resize(height);
+		int nodecount = 0;
+		TreeNode* emptyNode = new TreeNode;
+		std::queue<TreeNode*> queue;
+		//if (node != nullptr) queue.emplace(node);
+		queue.emplace(node);
+		while (nodecount < treeCapacity)
+		{
+			TreeNode* current = queue.front();
+			queue.pop(); nodecount++;
+
+			if (current == nullptr)
+			{
+
+				treegrid[lookuparray[nodecount - 1]].push_back(SENTINEL);
+				queue.emplace(emptyNode);
+				queue.emplace(emptyNode);
+			}
+			else
+			{
+				treegrid[lookuparray[nodecount - 1]].push_back(current->value);
+				queue.emplace(current->leftNode);
+				queue.emplace(current->rightNode);
+			}
+		}
+		delete emptyNode; emptyNode = nullptr;
+
+		std::vector<std::vector<int>> printgrid;
+		printgrid.resize(maxPrintableHeight);
+		for (int i = 0; i < maxPrintableHeight; i++)
+		{
+			printgrid[i].push_back(whitespacePrintFactor * int(std::pow(2, maxPrintableHeight - i - 1)) - 1);
+			for (int j = 1; j < std::pow(2, i); j++)
+			{
+				printgrid[i].push_back(whitespacePrintFactor * int(std::pow(2, maxPrintableHeight - i)) - 1);
+			}
+		}
+
+		for (int i = 0; i < maxPrintableHeight; i++)
+		{
+			int reduce_from_next = 0;
+			for (int j = 0; j < std::pow(2, i); j++)
+			{
+				std::cout << std::string(printgrid[i][j] - reduce_from_next, ' ');
+				reduce_from_next = 0;
+				if (treegrid[i][j] == SENTINEL)
+				{
+					//std::cout << "..";
+					//reduce_from_next = 1;
+					std::cout << std::string(minDigits, '.');
+					reduce_from_next = minDigits - 1;
+				}
+				else
+				{
+					std::cout << treegrid[i][j];
+					int addDigits = 0;
+					if (numDigits(treegrid[i][j]) < int(minDigits))
+					{
+						addDigits = std::max(minDigits - numDigits(treegrid[i][j]),0);
+						std::cout << std::string(addDigits, '.');
+					}
+					reduce_from_next = numDigits(treegrid[i][j]) - 1 + addDigits;
+				}
+			}
+			std::cout << std::endl;
+			std::cout << std::endl;
+		}
 	}
 }

@@ -1,25 +1,31 @@
 #pragma once
 #include <iostream>
 
+static constexpr int SENTINEL = -999999;
+
 struct TreeNode
 {
-	int value=0;
+	int value = SENTINEL;
 	TreeNode* leftNode = nullptr;
 	TreeNode* rightNode = nullptr;
 };
 
-void insert(struct TreeNode*& node, int val);
+void insert(TreeNode*& node, int val);
 bool contains(TreeNode* node, int val);
 TreeNode* findNode(TreeNode* node, int val);
 int getMin(TreeNode* node);
 int getMax(TreeNode* node);
 void getNodeDepth(TreeNode* node, int val, int& count);
-int getTreeDepth(TreeNode* node);
-void printPre(struct TreeNode* node);
-void printIn(struct TreeNode* node);
-void printPost(struct TreeNode* node);
-void printLevelTopDown(struct TreeNode* node);
-void printLevelBottomUp(struct TreeNode* node);
+int getTreeHeight(TreeNode* node);
+int getNumberOfNodes(TreeNode* node);
+
+int getNumberOfElementsAtDepth(TreeNode* node, int depth);
+void printPre(TreeNode* node);
+void printIn(TreeNode* node);
+void printPost(TreeNode* node);
+void printLevelTopDown(TreeNode* node);
+void printLevelBottomUp(TreeNode* node);
+void printTreeChart(TreeNode* node);
 
 
 
