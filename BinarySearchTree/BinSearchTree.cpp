@@ -22,6 +22,11 @@ void insert(TreeNode*& node, int val)
 	return;
 }
 
+bool contains(TreeNode* node, int val)
+{
+	return (findNode(node, val) != nullptr);
+}
+
 TreeNode* findNode(TreeNode* node, int val)
 {
 	if (node != nullptr) std::cout << "[" << node << ":" << node->value << "]"; else std::cout << "[" << node << "]";
@@ -33,13 +38,78 @@ TreeNode* findNode(TreeNode* node, int val)
 	}
 	else if (val < node->value)
 	{
-		return findNode(node->leftNode,val);
+		return findNode(node->leftNode, val);
 	}
 	else if (val > node->value)
 	{
-		return findNode(node->rightNode,val);
+		return findNode(node->rightNode, val);
 	}
-	
+	else return nullptr;
+}
+
+int getMin(TreeNode* node)
+{
+	try
+	{
+		if (node == nullptr)
+		{
+			throw std::exception("Error, tree is empty /");
+		}
+		while (node->leftNode != nullptr)
+		{
+			node = node->leftNode;
+		}
+		return node->value;
+	}
+	catch(std::exception& e)
+	{
+		std::cout << e.what();
+		return -1;
+	}
+}
+
+int getMax(TreeNode* node)
+{
+	try
+	{
+		if (node == nullptr)
+		{
+			throw std::exception("Error, tree is empty /");
+		}
+		while (node->rightNode != nullptr)
+		{
+			node = node->rightNode;
+		}
+		return node->value;
+	}
+	catch (std::exception & e)
+	{
+		std::cout << e.what();
+		return -1;
+	}
+}
+
+void getNodeDepth(TreeNode* node, int val, int& count)
+{
+	if (node == nullptr) return;
+	if (val == node->value)
+	{
+		return;
+	}
+	else if (val < node->value)
+	{
+		return getNodeDepth(node->leftNode, val, ++count);
+	}
+	else if (val > node->value)
+	{
+		return getNodeDepth(node->rightNode, val, ++count);
+	}
+	else return;
+}
+
+int getTreeDepth(TreeNode* node)
+{
+	return 0;
 }
 
 void printPre(TreeNode* node)

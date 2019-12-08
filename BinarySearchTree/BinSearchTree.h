@@ -9,7 +9,12 @@ struct TreeNode
 };
 
 void insert(struct TreeNode*& node, int val);
+bool contains(TreeNode* node, int val);
 TreeNode* findNode(TreeNode* node, int val);
+int getMin(TreeNode* node);
+int getMax(TreeNode* node);
+void getNodeDepth(TreeNode* node, int val, int& count);
+int getTreeDepth(TreeNode* node);
 void printPre(struct TreeNode* node);
 void printIn(struct TreeNode* node);
 void printPost(struct TreeNode* node);
