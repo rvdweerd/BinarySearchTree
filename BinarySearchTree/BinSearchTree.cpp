@@ -2,24 +2,44 @@
 #include <queue>
 #include <stack>
 
-void insert(TreeNode*& Node, int val)
+void insert(TreeNode*& node, int val)
 {
-	if (Node == nullptr)
+	if (node == nullptr)
 	{
-		Node = new TreeNode;
-		Node->value = val;
+		node = new TreeNode;
+		node->value = val;
 		return;
 	}
 
-	if (val > Node->value)
+	if (val > node->value)
 	{
-		insert(Node->rightNode, val);
+		insert(node->rightNode, val);
 	}
-	if (val < Node->value)
+	if (val < node->value)
 	{
-		insert(Node->leftNode, val);
+		insert(node->leftNode, val);
 	}
 	return;
+}
+
+TreeNode* findNode(TreeNode* node, int val)
+{
+	if (node != nullptr) std::cout << "[" << node << ":" << node->value << "]"; else std::cout << "[" << node << "]";
+	
+	if (node == nullptr) return nullptr;
+	if (val == node->value)
+	{
+		return node;
+	}
+	else if (val < node->value)
+	{
+		return findNode(node->leftNode,val);
+	}
+	else if (val > node->value)
+	{
+		return findNode(node->rightNode,val);
+	}
+	
 }
 
 void printPre(TreeNode* node)

@@ -8,14 +8,8 @@ struct TreeNode
 	TreeNode* rightNode = nullptr;
 };
 
-enum class PrintOption
-{
-	PreOrder, // preorder traverse print
-	InOrder,
-	PostOrder
-};
-
-void insert(struct TreeNode*& Node, int val);
+void insert(struct TreeNode*& node, int val);
+TreeNode* findNode(TreeNode* node, int val);
 void printPre(struct TreeNode* node);
 void printIn(struct TreeNode* node);
 void printPost(struct TreeNode* node);
