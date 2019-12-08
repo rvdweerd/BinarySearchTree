@@ -110,20 +110,14 @@ void getNodeDepth(TreeNode* node, int val, int& count)
 
 int getTreeDepth(TreeNode* node)
 {
-	std::queue<TreeNode*> queue;
-	std::vector<int> nodeDepthValues = {};
-	if (node != nullptr) queue.emplace(node);
-	while (!queue.empty())
+	if (node != nullptr)
 	{
-		TreeNode* current = queue.front();
-		queue.pop();
-		int count = 0;
-		getNodeDepth(node, current->value, count);
-		nodeDepthValues.push_back(count);
-		if (current->leftNode != nullptr) queue.emplace(current->leftNode);
-		if (current->rightNode != nullptr) queue.emplace(current->rightNode);
+		return 1 + std::max(getTreeDepth(node->leftNode), getTreeDepth(node->rightNode));
 	}
-	return *std::max_element(nodeDepthValues.begin(), nodeDepthValues.end());
+	else
+	{
+		return -1;
+	}
 }
 
 void printPre(TreeNode* node)
