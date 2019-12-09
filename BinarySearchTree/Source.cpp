@@ -3,8 +3,8 @@
 
 void test()
 {
-	std::vector<int> list = { 12,5,15,4,7,13,17,3,9,14,20,8,11,18,22,2 };
-	//std::vector<int> list = { 12,50,15,40,70,13,17,30,90,14,20,80,11,18,22,20,23 };
+	//std::vector<int> list = { 12,5,15,4,7,13,17,3,9,14,20,8,11,18,22,2 };
+	std::vector<int> list = { 5,2,6,7 };
 	TreeNode* tree = nullptr;
 	for (int v : list)
 	{

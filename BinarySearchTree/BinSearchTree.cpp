@@ -237,13 +237,16 @@ void printLevelBottomUp(TreeNode* node)
 
 void printTreeChart(TreeNode* node)
 {
+	// Print parameters
+	// ----------------
+	// Set print parameters (maximum printable depth, spacing between nodes depending on #digits)
+	//===========================================================================================
 	bool printable = true;
 	const int height = getTreeHeight(node);
 	int maxValueInTree = getMax(node);
 	int minValueInTree = getMin(node);
 	int maxDigits = std::max(numDigits(minValueInTree),numDigits(maxValueInTree));
 	bool minDigits = 1; // [1] = puts a '.' when node is empty, [0] = no '.' printed for empty nodes 
-	
 	int whitespacePrintFactor = 0; int maxPrintableHeight = std::min(0, height);
 	if      (maxDigits <=2 ) { whitespacePrintFactor = 2; maxPrintableHeight = std::min(7, height); }
 	else if (maxDigits == 3) { whitespacePrintFactor = 2; maxPrintableHeight = std::min(7, height); }
@@ -257,80 +260,110 @@ void printTreeChart(TreeNode* node)
 		std::cout << "Tree is not printable in chart format.";
 	}
 	else
-	{
-		std::vector<int> lookuparray;
+	{	
+		// lookupArray
+		// -----------
+		// Create helper array lookupArray, with size treeCapacity, that contains i entries 
+		// (i= is capacity at depth d) with value d. 
+		// For example, for depth 2: [0,1,1,2,2,2,2]
+		//=======================================================================================
+		std::vector<int> lookupArray;
 		int treeCapacity = 0;
 		for (int d = 0; d < height; d++)
 		{
 			for (int i = 0; i < int(std::pow(2, d)); i++)
 			{
-				lookuparray.push_back(d);
+				lookupArray.push_back(d);
 				treeCapacity++;
 			}
 		}
-		std::vector<std::vector<int>> treegrid;
-		treegrid.resize(height);
+		
+		// treeGrid
+		// --------
+		// Create helper 2d vector treeGrid that contains all node values ordererd by row (depth) 
+		// and column (placement Left & Right under parent), sentinel 'x' used for empty nodes.
+		// Queue used as helper container when traversing the tree.
+		// For example, tree with three nodes and depth 2, loaded with (5,2,6,7):
+		//	[	[ 5 ]
+		//		[ 2, 6 ]
+		//		[ x, x, x, 7 ]	]
+		//=======================================================================================
+		std::vector<std::vector<int>> treeGrid;
+		treeGrid.resize(height);
 		int nodecount = 0;
 		TreeNode* emptyNode = new TreeNode;
 		std::queue<TreeNode*> queue;
-		//if (node != nullptr) queue.emplace(node);
 		queue.emplace(node);
 		while (nodecount < treeCapacity)
 		{
 			TreeNode* current = queue.front();
 			queue.pop(); nodecount++;
-
 			if (current == nullptr)
 			{
 
-				treegrid[lookuparray[nodecount - 1]].push_back(SENTINEL);
+				treeGrid[lookupArray[nodecount - 1]].push_back(SENTINEL);
 				queue.emplace(emptyNode);
 				queue.emplace(emptyNode);
 			}
 			else
 			{
-				treegrid[lookuparray[nodecount - 1]].push_back(current->value);
+				treeGrid[lookupArray[nodecount - 1]].push_back(current->value);
 				queue.emplace(current->leftNode);
 				queue.emplace(current->rightNode);
 			}
 		}
 		delete emptyNode; emptyNode = nullptr;
 
-		std::vector<std::vector<int>> printgrid;
-		printgrid.resize(maxPrintableHeight);
+		// printGrid
+		// ---------
+		// Create helper 2d vector printGrid that contains, per depth level, the number of spaces between different nodes.
+		// The number of spaces depends on two print parameters initialized above (start of function)
+		//   a) maxPrintableHeight - depth level that is printed, 
+		//   b) whitespacePrintFactor - a scaling factor that depends on the largest number of digits for the a node.
+		// For example, tree with full capacity and depth 2:
+		//
+		//	[	[ 7 ]					to create:		.......a			(7 spaces before node1)
+		//		[ 3, 7 ]								...b.......c		(3 spaces before node2, 7 spaces before node3)
+		//		[ 1, 3, 3, 3 ]	]						.d...e...f...g		(etc.)
+		//
+		//=======================================================================================
+		std::vector<std::vector<int>> printGrid;
+		printGrid.resize(maxPrintableHeight);
 		for (int i = 0; i < maxPrintableHeight; i++)
 		{
-			printgrid[i].push_back(whitespacePrintFactor * int(std::pow(2, maxPrintableHeight - i - 1)) - 1);
+			printGrid[i].push_back(whitespacePrintFactor * int(std::pow(2, maxPrintableHeight - i - 1)) - 1);
 			for (int j = 1; j < std::pow(2, i); j++)
 			{
-				printgrid[i].push_back(whitespacePrintFactor * int(std::pow(2, maxPrintableHeight - i)) - 1);
+				printGrid[i].push_back(whitespacePrintFactor * int(std::pow(2, maxPrintableHeight - i)) - 1);
 			}
 		}
 
+		// Console output
+		// --------------
+		// Actual loop to print the tree to screen
+		//=======================================================================================
 		for (int i = 0; i < maxPrintableHeight; i++)
 		{
 			int reduce_from_next = 0;
 			for (int j = 0; j < std::pow(2, i); j++)
 			{
-				std::cout << std::string(printgrid[i][j] - reduce_from_next, ' ');
+				std::cout << std::string(printGrid[i][j] - reduce_from_next, ' ');
 				reduce_from_next = 0;
-				if (treegrid[i][j] == SENTINEL)
+				if (treeGrid[i][j] == SENTINEL)
 				{
-					//std::cout << "..";
-					//reduce_from_next = 1;
 					std::cout << std::string(minDigits, '.');
 					reduce_from_next = minDigits - 1;
 				}
 				else
 				{
-					std::cout << treegrid[i][j];
+					std::cout << treeGrid[i][j];
 					int addDigits = 0;
-					if (numDigits(treegrid[i][j]) < int(minDigits))
+					if (numDigits(treeGrid[i][j]) < int(minDigits))
 					{
-						addDigits = std::max(minDigits - numDigits(treegrid[i][j]),0);
+						addDigits = std::max(minDigits - numDigits(treeGrid[i][j]),0);
 						std::cout << std::string(addDigits, '.');
 					}
-					reduce_from_next = numDigits(treegrid[i][j]) - 1 + addDigits;
+					reduce_from_next = numDigits(treeGrid[i][j]) - 1 + addDigits;
 				}
 			}
 			std::cout << std::endl;
