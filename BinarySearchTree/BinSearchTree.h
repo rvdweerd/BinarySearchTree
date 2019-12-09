@@ -11,8 +11,10 @@ struct TreeNode
 };
 
 void insert(TreeNode*& node, int val);
+void remove(TreeNode*& node, int val);
 bool contains(TreeNode* node, int val);
 TreeNode* findNode(TreeNode* node, int val);
+TreeNode* findParent(TreeNode* node, int val);
 int getMin(TreeNode* node);
 int getMax(TreeNode* node);
 void getNodeDepth(TreeNode* node, int val, int& count);

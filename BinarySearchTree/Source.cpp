@@ -3,8 +3,8 @@
 
 void test()
 {
-	//std::vector<int> list = { 12,5,15,4,7,13,17,3,9,14,20,8,11,18,22,2 };
-	std::vector<int> list = { 5,2,6,7 };
+	std::vector<int> list = { 12,5,15,3,7,13,17,3,9,14,20,8,11,18 };
+	//std::vector<int> list = { 5,2,6,7 };
 	TreeNode* tree = nullptr;
 	for (int v : list)
 	{
@@ -17,11 +17,18 @@ void test()
 	std::cout << "Print post-order:"; printPost(tree); std::cout << std::endl;
 	std::cout << "Print top-down:  "; printLevelTopDown(tree); std::cout << std::endl;
 	std::cout << "Print bottom-up: "; printLevelBottomUp(tree); std::cout << std::endl;
-	std::cout << "\n== TEST 2 - contains() ================================================\n";
+	
+	std::cout << "\n== TEST 2.1 - contains() ================================================\n";
 	std::cout << "tree contains 4? " << (findNode(tree, 4) != nullptr) << std::endl;
 	std::cout << "tree contains 11? " << (findNode(tree, 11) != nullptr) << std::endl;
 	std::cout << "tree contains 1? " << (findNode(tree, 1) != nullptr) << std::endl;
 	std::cout << "tree contains 18? " << contains(tree, 18) << std::endl;
+	std::cout << "\n== TEST 2.2 - findParent() ================================================\n";
+	std::cout << "Parent of 7?  "; if (findParent(tree, 7 ) == nullptr) std::cout << "No parent.\n"; else std::cout << findParent(tree, 7 )->value << std::endl;
+	std::cout << "Parent of 12? "; if (findParent(tree, 12) == nullptr) std::cout << "No parent.\n"; else std::cout << findParent(tree, 12)->value << std::endl;
+	std::cout << "Parent of 11? "; if (findParent(tree, 11) == nullptr) std::cout << "No parent.\n"; else std::cout << findParent(tree, 11)->value << std::endl;
+	std::cout << "Parent of 1?  "; if (findParent(tree, 1 ) == nullptr) std::cout << "No parent.\n"; else std::cout << findParent(tree, 1 )->value << std::endl;
+	std::cout << "Parent of 18? "; if (findParent(tree, 18) == nullptr) std::cout << "No parent.\n"; else std::cout << findParent(tree, 18)->value << std::endl;
 
 	std::cout << "\n== TEST 3 - min/max value =============================================\n";
 	std::cout << "Tree minimum: "; std::cout << getMin(tree) << std::endl;;
@@ -49,6 +56,28 @@ void test()
 	std::cout << "The number of nodes at depth 3: " << getNumberOfElementsAtDepth(tree, 3) << std::endl;
 	std::cout << "The number of nodes at depth 4: " << getNumberOfElementsAtDepth(tree, 4) << std::endl;
 	std::cout << "The number of nodes at depth 5: " << getNumberOfElementsAtDepth(tree, 5) << std::endl;
+
+	std::cout << "\n== TEST 6.1 - remove() - Leafs =========================================\n";
+	std::cout << "Removing 8, 11, 19.\n";
+	remove(tree, 8); remove(tree, 11); remove(tree, 19);
+	printTreeChart(tree);
+	std::cout << "\n== TEST 6.2 - remove() - One Child Nodes (L and R) =====================\n";
+	std::cout << "Removing 13, 20.\n";
+	remove(tree, 13); 
+	remove(tree, 20);
+	printTreeChart(tree);
+	std::cout << "\n== TEST 6.3 - remove() - Full Node======================================\n";
+	std::cout << "Removing 12.\n";
+	remove(tree, 12);
+	printTreeChart(tree);
+	std::cout << "Removing 14.\n";
+	remove(tree, 14);
+	printTreeChart(tree);
+	std::cout << "Removing 5.\n";
+	remove(tree, 5);
+	printTreeChart(tree);
+
+
 }
 
 int main()

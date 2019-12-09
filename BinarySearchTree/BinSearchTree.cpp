@@ -37,6 +37,57 @@ void insert(TreeNode*& node, int val)
 	return;
 }
 
+void remove(TreeNode*& node, int val)
+{
+	if (node == nullptr)
+	{
+		return;
+	}
+
+	if (node->value == val)
+	{
+		// CASE 1: Node is a Leaf
+		if (node->leftNode == nullptr && node->rightNode == nullptr)
+		{
+			delete node;
+			node = nullptr;
+			return;
+		}
+		// CASE 2: Node has only one Child
+		else if (node->leftNode == nullptr && node->rightNode != nullptr)
+		{
+			TreeNode* tmp = node;
+			node = node->rightNode;
+			delete tmp;
+		}
+		else if (node->leftNode != nullptr && node->rightNode == nullptr)
+		{
+			TreeNode* tmp = node;
+			node = node->leftNode;
+			delete tmp;
+		}
+		// CASE 3: Node has two Children
+		else
+		{
+			// Replaement with {Max value of Left tree}
+			//int replacementValue = getMax(node->leftNode);  
+			//node->value = replacementValue;
+			//remove(node->leftNode, replacementValue);
+
+			// Replaement with {Min value of Right tree}
+			int replacementValue = getMin(node->rightNode); 
+			node->value = replacementValue;
+			remove(node->rightNode, replacementValue);
+
+		}
+
+	}
+	else if (val < node->value) remove(node->leftNode, val);
+	else remove(node->rightNode, val);
+}
+
+
+
 bool contains(TreeNode* node, int val)
 {
 	return (findNode(node, val) != nullptr);
@@ -60,6 +111,37 @@ TreeNode* findNode(TreeNode* node, int val)
 		return findNode(node->rightNode, val);
 	}
 	else return nullptr;
+}
+
+TreeNode* findParent(TreeNode* node, int val)
+{
+	TreeNode* parent = nullptr;
+	std::queue<TreeNode*> queue;
+	if (node != nullptr) queue.emplace(node);
+	while (!queue.empty())
+	{
+		TreeNode* current = queue.front();
+		queue.pop();
+		if (current->leftNode != nullptr)
+		{
+			if (current->leftNode->value == val)
+			{
+				parent = current;
+				break;
+			}
+			queue.emplace(current->leftNode);
+		}
+		if (current->rightNode != nullptr)
+		{
+			if (current->rightNode->value == val)
+			{
+				parent = current;
+				break;
+			}
+			queue.emplace(current->rightNode);
+		}
+	}
+	return parent;
 }
 
 int getMin(TreeNode* node)
